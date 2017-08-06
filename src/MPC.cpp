@@ -12,6 +12,7 @@ using CppAD::AD;
 size_t N = 25;
 double dt = 0.05;
 
+
 // This value assumes the model presented in the classroom is used.
 //
 // It was obtained by measuring the radius formed by running the vehicle in the
