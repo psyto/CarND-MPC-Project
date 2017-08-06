@@ -6,12 +6,8 @@
 using CppAD::AD;
 
 // TODO: Set the timestep length and duration
-// size_t N = 0;
-// double dt = 0;
-
 size_t N = 25;
 double dt = 0.05;
-
 
 // This value assumes the model presented in the classroom is used.
 //
@@ -51,6 +47,11 @@ class FG_eval {
   // `fg` is a vector containing the cost and constraints.
   // `vars` is a vector containing the variable values (state & actuators).
   void operator()(ADvector& fg, const ADvector& vars) {
+    // TODO: implement MPC
+    // `fg` a vector of the cost constraints, `vars` is a vector of variable values (state & actuators)
+    // NOTE: You'll probably go back and forth between this function and
+    // the Solver function below.
+
     // The cost is stored is the first element of `fg`.
     // Any additions to the cost should be added to `fg[0]`.
     fg[0] = 0;
