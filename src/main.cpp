@@ -98,8 +98,41 @@ int main() {
           * Both are in between [-1, 1].
           *
           */
-          double steer_value;
-          double throttle_value;
+
+          // Shifting the car reference in proper coordinates
+          for (unsigned int i = 0; i < ptsx.size(); i++) {
+            double shift_x = ptsx[i] - px;
+            double shift_y = ptsy[i] - py;
+
+            ptsx[i] = shift_x * cos(-psi) - shift_y * sin(-psi);
+            ptsy[i] = shift_x * sin(-psi) + shift_y * cos(-psi);
+		      }
+
+          // Wrapping the reference coordinates into proper type
+          double* ptrx = &ptsx[0];
+          Eigen::Map<Eigen::VectorXd> reference_points_x(ptrx, 6);
+
+          // Wrapping the reference coordinates into proper type
+          double* ptry = &ptsy[0];
+		      Eigen::Map<Eigen::VectorXd> reference_points_y(ptry, 6);
+
+		      // Fitting a polynomial to the reference points
+          auto coeffs = polyfit(reference_points_x, reference_points_y, 3);
+
+		      // Calculating errors
+          double cte = polyeval(coeffs, 0);
+		      double epsi = -atan(coeffs[1]);
+
+          Eigen::VectorXd state(6);
+          state << 0, 0, 0, v, cte, epsi;
+
+          auto result = mpc.Solve(state, coeffs);
+
+          double steer_value = result[0];
+          double throttle_value = result[1];
+
+          //double steer_value;
+          //double throttle_value;
 
           json msgJson;
           // NOTE: Remember to divide by deg2rad(25) before you send the steering value back.
@@ -107,7 +140,7 @@ int main() {
           msgJson["steering_angle"] = steer_value;
           msgJson["throttle"] = throttle_value;
 
-          //Display the MPC predicted trajectory 
+          //Display the MPC predicted trajectory
           vector<double> mpc_x_vals;
           vector<double> mpc_y_vals;
 
