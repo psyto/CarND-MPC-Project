@@ -58,21 +58,21 @@ class FG_eval {
 
     // The part of the cost based on the reference state.
     for (unsigned int t = 0; t < N; t++) {
-      fg[0] += CppAD::pow(vars[cte_start + t], 2);
-      fg[0] += CppAD::pow(vars[epsi_start + t], 2);
+      fg[0] += 4000 * CppAD::pow(vars[cte_start + t], 2);
+      fg[0] += 4000 * CppAD::pow(vars[epsi_start + t], 2);
       fg[0] += CppAD::pow(vars[v_start + t] - ref_v, 2);
     }
 
     // Minimize the use of actuators.
     for (unsigned int t = 0; t < N - 1; t++) {
-      fg[0] += CppAD::pow(vars[delta_start + t], 2);
-      fg[0] += CppAD::pow(vars[a_start + t], 2);
+      fg[0] += 5 * CppAD::pow(vars[delta_start + t], 2);
+      fg[0] += 5 * CppAD::pow(vars[a_start + t], 2);
     }
 
     // Minimize the value gap between sequential actuations.
     for (unsigned int t = 0; t < N - 2; t++) {
-      fg[0] += CppAD::pow(vars[delta_start + t + 1] - vars[delta_start + t], 2);
-      fg[0] += CppAD::pow(vars[a_start + t + 1] - vars[a_start + t], 2);
+      fg[0] += 200 * CppAD::pow(vars[delta_start + t + 1] - vars[delta_start + t], 2);
+      fg[0] += 10 * CppAD::pow(vars[a_start + t + 1] - vars[a_start + t], 2);
     }
 
     //
@@ -274,9 +274,17 @@ vector<double> MPC::Solve(Eigen::VectorXd state, Eigen::VectorXd coeffs) {
   //
   // {...} is shorthand for creating a vector, so auto x1 = {1.0,2.0}
   // creates a 2 element double vector.
-  return {solution.x[x_start + 1],   solution.x[y_start + 1],
-          solution.x[psi_start + 1], solution.x[v_start + 1],
-          solution.x[cte_start + 1], solution.x[epsi_start + 1],
-          solution.x[delta_start],   solution.x[a_start]};
+  vector<double> result;
+
+  result.push_back(solution.x[delta_start]);
+  result.push_back(solution.x[a_start]);
+
+  for (unsigned int i = 0; i < N-1; i++)
+  {
+    result.push_back(solution.x[x_start + i + 1]);
+    result.push_back(solution.x[y_start + i + 1]);
+  }
+
+  return result;
 
 }
