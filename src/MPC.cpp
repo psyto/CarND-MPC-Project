@@ -6,8 +6,8 @@
 using CppAD::AD;
 
 // TODO: Set the timestep length and duration
-size_t N = 10;
-double dt = 0.1;
+size_t N = 12;
+double dt = 0.12;
 
 // This value assumes the model presented in the classroom is used.
 //
@@ -23,7 +23,18 @@ const double Lf = 2.67;
 
 // Both the reference cross track and orientation errors are 0.
 // The reference velocity is set to 40 mph.
+double ref_cte = 0;
+double ref_epsi = 0;
 double ref_v = 40;
+
+// Multiplier for the cost functions. Tuned based on performance in the simulator
+int cost_cte = 1500;
+int cost_eps = 500;
+int cost_v = 1;
+int cost_current_delta = 50;
+int cost_current_a = 25;
+int cost_diff_delta = 300;
+int cost_diff_a = 125;
 
 // The solver takes all the state variables and actuator
 // variables in a singular vector. Thus, we should to establish
@@ -58,21 +69,21 @@ class FG_eval {
 
     // The part of the cost based on the reference state.
     for (unsigned int t = 0; t < N; t++) {
-      fg[0] += 4000 * CppAD::pow(vars[cte_start + t], 2);
-      fg[0] += 4000 * CppAD::pow(vars[epsi_start + t], 2);
-      fg[0] += CppAD::pow(vars[v_start + t] - ref_v, 2);
+      fg[0] += cost_cte * CppAD::pow(vars[cte_start + t], 2);
+      fg[0] += cost_eps * CppAD::pow(vars[epsi_start + t], 2);
+      fg[0] += cost_v * CppAD::pow(vars[v_start + t] - ref_v, 2);
     }
 
     // Minimize the use of actuators.
     for (unsigned int t = 0; t < N - 1; t++) {
-      fg[0] += 5 * CppAD::pow(vars[delta_start + t], 2);
-      fg[0] += 5 * CppAD::pow(vars[a_start + t], 2);
+      fg[0] += cost_current_delta * CppAD::pow(vars[delta_start + t], 2);
+      fg[0] += cost_current_a * CppAD::pow(vars[a_start + t], 2);
     }
 
     // Minimize the value gap between sequential actuations.
     for (unsigned int t = 0; t < N - 2; t++) {
-      fg[0] += 200 * CppAD::pow(vars[delta_start + t + 1] - vars[delta_start + t], 2);
-      fg[0] += 10 * CppAD::pow(vars[a_start + t + 1] - vars[a_start + t], 2);
+      fg[0] += cost_diff_delta * CppAD::pow(vars[delta_start + t + 1] - vars[delta_start + t], 2);
+      fg[0] += cost_diff_a * CppAD::pow(vars[a_start + t + 1] - vars[a_start + t], 2);
     }
 
     //
