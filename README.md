@@ -4,7 +4,7 @@ Self-Driving Car Engineer Nanodegree Program
 ---
 
 ## The Model
-----
+
 I used the below model.
 
 1. State
@@ -28,7 +28,7 @@ I used the below model.
 * epsi<sub>t+1</sub> = epsi<sub>t</sub> + v<sub>t</sub> / L<sub>f</sub> * steer_value * dt
 
 ## Timestep Length and Elapsed Duration (N & dt)
-----
+
 To select N and dt, I followed the general guideline (T should be as large as possible, while dt should be as small as possible).
 
 For N, I tried 5, 10, 15, and 20.
@@ -42,7 +42,7 @@ For dt, I tried 0.01, 0.05, 0.1, and 0.5.
 As 0.05 is the smallest, I selected 0.05 for dt.
 
 ## Polynomial Fitting and MPC Preprocessing
-----
+
 Prior to the MPC procedure, I preprocessed data as follows:
 1. Get data from simulator
 2. Convert data from global coordinates to car coordinates
@@ -53,7 +53,7 @@ Prior to the MPC procedure, I preprocessed data as follows:
 7. Create state vector with latency of 0.1 sec
 
 ## Model Predictive Control with Latency
-----
+
 Before solving MPC, I added 0.1 sec latency to state as follows:
 ```
 // Create state vector with latency of 0.1 sec
