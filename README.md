@@ -20,8 +20,8 @@ I used the below model.
 * throttle_value: acceleration/deceleration
 
 3. Update equations
-* x<sub>t+1</sub> = x<sub>t</sub> + v<sub>t</sub> * cos(Ψ<sub>t</sub>) * dt
-* y<sub>t+1</sub> = y<sub>t</sub> + v<sub>t</sub> * sin(Ψ<sub>t</sub>) * dt
+* x<sub>t+1</sub> = x<sub>t</sub> + v<sub>t</sub> * cos(psi<sub>t</sub>) * dt
+* y<sub>t+1</sub> = y<sub>t</sub> + v<sub>t</sub> * sin(psi<sub>t</sub>) * dt
 * psi<sub>t+1</sub> = psi<sub>t</sub> + v<sub>t</sub> * steer_value / L<sub>f</sub> * dt
 * v<sub>t+1</sub> = v<sub>t</sub> * throttle_value * dt
 * cte<sub>t+1</sub> = cte<sub>t</sub> + v<sub>t</sub> * sin(epsi<sub>t</sub>) * dt
@@ -67,6 +67,7 @@ epsi = epsi - v * steer_value / Lf * dt;
 v = v + throttle_value * dt;
 state << px, py, psi, v, cte, epsi;
 ```
+I multiplied minus to orientation to make direction opposite.
 
 ## Dependencies
 
