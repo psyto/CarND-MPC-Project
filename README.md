@@ -22,10 +22,10 @@ I used the below model.
 3. Update equations
 * x<sub>t+1</sub> = x<sub>t</sub> + v<sub>t</sub> * cos(Ψ<sub>t</sub>) * dt
 * y<sub>t+1</sub> = y<sub>t</sub> + v<sub>t</sub> * sin(Ψ<sub>t</sub>) * dt
-* psi<sub>t+1</sub> = psi<sub>t</sub> + v<sub>t</sub> / L<sub>f</sub> * steer_value * dt
+* psi<sub>t+1</sub> = psi<sub>t</sub> + v<sub>t</sub> * steer_value / L<sub>f</sub> * dt
 * v<sub>t+1</sub> = v<sub>t</sub> * throttle_value * dt
 * cte<sub>t+1</sub> = cte<sub>t</sub> + v<sub>t</sub> * sin(epsi<sub>t</sub>) * dt
-* epsi<sub>t+1</sub> = epsi<sub>t</sub> + v<sub>t</sub> / L<sub>f</sub> * steer_value * dt
+* epsi<sub>t+1</sub> = epsi<sub>t</sub> + v<sub>t</sub> * steer_value / L<sub>f</sub> * dt
 
 ## Timestep Length and Elapsed Duration (N & dt)
 
