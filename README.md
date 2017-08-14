@@ -10,7 +10,7 @@ I used the below model.
 1. State
 * x: x coordinates of vehicle
 * y: y coordinates of vehicle
-* Ψ: Vehicle Orientation Angle
+* psi: Vehicle Orientation Angle
 * v: Vehicle speed
 * cte: Cross Track Error
 * epsi: Orientation Error
@@ -22,7 +22,7 @@ I used the below model.
 3. Update equations
 * x<sub>t+1</sub> = x<sub>t</sub> + v<sub>t</sub> * cos(Ψ<sub>t</sub>) * dt
 * y<sub>t+1</sub> = y<sub>t</sub> + v<sub>t</sub> * sin(Ψ<sub>t</sub>) * dt
-* Ψ<sub>t+1</sub> = Ψ<sub>t</sub> + v<sub>t</sub> / L<sub>f</sub> * steer_value * dt
+* psi<sub>t+1</sub> = psi<sub>t</sub> + v<sub>t</sub> / L<sub>f</sub> * steer_value * dt
 * v<sub>t+1</sub> = v<sub>t</sub> * throttle_value * dt
 * cte<sub>t+1</sub> = cte<sub>t</sub> + v<sub>t</sub> * sin(epsi<sub>t</sub>) * dt
 * epsi<sub>t+1</sub> = epsi<sub>t</sub> + v<sub>t</sub> / L<sub>f</sub> * steer_value * dt
