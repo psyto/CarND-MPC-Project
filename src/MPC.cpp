@@ -7,13 +7,13 @@ using CppAD::AD;
 
 // TODO: Set the timestep length and duration
 //size_t N = 5; // NG
-//size_t N = 15; // OK, but not smooth
-//size_t N = 20; // OK, but not smooth
-//size_t N = 25; // NG
-size_t N = 10;
+//size_t N = 10; // OK
+//size_t N = 20; // NG
+size_t N = 15; // OK and the largest
 //double dt = 0.01; // MPC predicted trajectory is invisible
+//double dt = 0.1; // OK
 //double dt = 0.5; // MPC predicted trajectory is not smooth
-double dt = 0.1;
+double dt = 0.05; // OK and the smallest
 
 // This value assumes the model presented in the classroom is used.
 //

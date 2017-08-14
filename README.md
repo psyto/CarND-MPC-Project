@@ -3,6 +3,71 @@ Self-Driving Car Engineer Nanodegree Program
 
 ---
 
+## The Model
+----
+I used the below model.
+
+1. State
+* x: x coordinates of vehicle
+* y: y coordinates of vehicle
+* Ψ: Vehicle Orientation Angle
+* v: Vehicle speed
+* cte: Cross Track Error
+* epsi: Orientation Error
+
+2. Actuators
+* steer_value: steering angle
+* throttle_value: acceleration/deceleration
+
+3. Update equations
+* x<sub>t+1</sub> = x<sub>t</sub> + v<sub>t</sub> * cos(Ψ<sub>t</sub>) * dt
+* y<sub>t+1</sub> = y<sub>t</sub> + v<sub>t</sub> * sin(Ψ<sub>t</sub>) * dt
+* Ψ<sub>t+1</sub> = Ψ<sub>t</sub> + v<sub>t</sub> / L<sub>f</sub> * steer_value * dt
+* v<sub>t+1</sub> = v<sub>t</sub> * throttle_value * dt
+* cte<sub>t+1</sub> = cte<sub>t</sub> + v<sub>t</sub> * sin(epsi<sub>t</sub>) * dt
+* epsi<sub>t+1</sub> = epsi<sub>t</sub> + v<sub>t</sub> / L<sub>f</sub> * steer_value * dt
+
+## Timestep Length and Elapsed Duration (N & dt)
+----
+To select N and dt, I followed the general guideline (T should be as large as possible, while dt should be as small as possible).
+
+For N, I tried 5, 10, 15, and 20.
+I found that 5 and 20 made car over the curve, 10 and 15 are fine.
+As 15 is the largest, I selected 15 for N.
+
+For dt, I tried 0.01, 0.05, 0.1, and 0.5.
+0.01 made MPC predicted trajectory invisible.
+0.05 and 0.1 are fine.
+0.5 made MPC predicted trajectory not smooth.
+As 0.05 is the smallest, I selected 0.05 for dt.
+
+## Polynomial Fitting and MPC Preprocessing
+----
+Prior to the MPC procedure, I preprocessed data as follows:
+1. Get data from simulator
+2. Convert data from global coordinates to car coordinates
+3. Use Eigen vector as polyfit() requires it
+4. Transform ptsx, ptsy to car coordinates
+5. Fit polynomial to car x and y coordinates
+6. Calculate cross-track error and orientation error
+7. Create state vector with latency of 0.1 sec
+
+## Model Predictive Control with Latency
+----
+Before solving MPC, I added 0.1 sec latency to state as follows:
+```
+// Create state vector with latency of 0.1 sec
+Eigen::VectorXd state(6);
+double dt = 0.1;
+px = v * dt;
+py = 0.0;
+psi = -v * steer_value / Lf * dt;
+cte = cte + (v * sin(epsi) * dt);
+epsi = epsi - v * steer_value / Lf * dt;
+v = v + throttle_value * dt;
+state << px, py, psi, v, cte, epsi;
+```
+
 ## Dependencies
 
 * cmake >= 3.5
@@ -19,7 +84,7 @@ Self-Driving Car Engineer Nanodegree Program
   * Run either `install-mac.sh` or `install-ubuntu.sh`.
   * If you install from source, checkout to commit `e94b6e1`, i.e.
     ```
-    git clone https://github.com/uWebSockets/uWebSockets 
+    git clone https://github.com/uWebSockets/uWebSockets
     cd uWebSockets
     git checkout e94b6e1
     ```
@@ -42,7 +107,7 @@ Self-Driving Car Engineer Nanodegree Program
        per this [forum post](https://discussions.udacity.com/t/incorrect-checksum-for-freed-object/313433/19).
   * Linux
     * You will need a version of Ipopt 3.12.1 or higher. The version available through `apt-get` is 3.11.x. If you can get that version to work great but if not there's a script `install_ipopt.sh` that will install Ipopt. You just need to download the source from the Ipopt [releases page](https://www.coin-or.org/download/source/Ipopt/) or the [Github releases](https://github.com/coin-or/Ipopt/releases) page.
-    * Then call `install_ipopt.sh` with the source directory as the first argument, ex: `sudo bash install_ipopt.sh Ipopt-3.12.1`. 
+    * Then call `install_ipopt.sh` with the source directory as the first argument, ex: `sudo bash install_ipopt.sh Ipopt-3.12.1`.
   * Windows: TODO. If you can use the Linux subsystem and follow the Linux instructions.
 * [CppAD](https://www.coin-or.org/CppAD/)
   * Mac: `brew install cppad`
