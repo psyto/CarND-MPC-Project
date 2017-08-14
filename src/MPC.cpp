@@ -6,8 +6,14 @@
 using CppAD::AD;
 
 // TODO: Set the timestep length and duration
-size_t N = 12;
-double dt = 0.12;
+//size_t N = 5; // NG
+//size_t N = 15; // OK, but not smooth
+//size_t N = 20; // OK, but not smooth
+//size_t N = 25; // NG
+size_t N = 10;
+//double dt = 0.01; // MPC predicted trajectory is invisible
+//double dt = 0.5; // MPC predicted trajectory is not smooth
+double dt = 0.1;
 
 // This value assumes the model presented in the classroom is used.
 //
@@ -39,14 +45,26 @@ size_t epsi_start = cte_start + N;
 size_t delta_start = epsi_start + N;
 size_t a_start = delta_start + N - 1;
 
-// Multiplier for the cost functions. Tuned based on performance in the simulator
-int cost_cte = 1500;
-int cost_eps = 500;
+// Multiplier for the cost functions.
+// Based on the parameter values explained in Q&A video, I tuned the first 2 by seeing the results in simulator.
+
+//int cost_cte = 1; // Constantly away from the waypoints/reference line
+//int cost_cte = 10; // OK, but little bit away from the waypoints/reference line
+//int cost_cte = 1000; // OK, but little bit too much steering
+//int cost_cte = 2000; // NG
+int cost_cte = 100;
+
+//int cost_eps = 1; // OK, but little bit not smooth
+//int cost_eps = 10; // OK, but 100 is better
+//int cost_eps = 1000; // OK, but 100 is better
+//int cost_eps = 2000; // NG
+int cost_eps = 100;
+
 int cost_v = 1;
-int cost_current_delta = 50;
-int cost_current_a = 25;
-int cost_diff_delta = 300;
-int cost_diff_a = 125;
+int cost_current_delta = 5;
+int cost_current_a = 5;
+int cost_diff_delta = 200;
+int cost_diff_a = 10;
 
 class FG_eval {
  public:

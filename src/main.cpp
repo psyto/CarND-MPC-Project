@@ -126,10 +126,19 @@ int main() {
           // Use these values to implement a delay
           double steer_value = j[1]["steering_angle"];
           double throttle_value = j[1]["throttle"];
+          double Lf = 2.67;
 
           // 4. Define initial state
+          // Create state vector with latency of 0.1 sec
           Eigen::VectorXd state(6);
-          state << 0, 0, 0, v, cte, epsi;
+          double dt = 0.1;
+          px = v * dt;
+          py = 0.0;
+          psi = -v * steer_value / Lf * dt;
+          cte = cte + (v * sin(epsi) * dt);
+          epsi = epsi - v * steer_value / Lf * dt;
+          v = v + throttle_value * dt;
+          state << px, py, psi, v, cte, epsi;
 
           // 5. Solve using MPC
           auto vars = mpc.Solve(state, coeffs);
@@ -142,7 +151,6 @@ int main() {
           json msgJson;
           // NOTE: Remember to divide by deg2rad(25) before you send the steering value back.
           // Otherwise the values will be in between [-deg2rad(25), deg2rad(25] instead of [-1, 1].
-          double Lf = 2.67;
           msgJson["steering_angle"] = steer_value / (deg2rad(25) * Lf);
           //msgJson["steering_angle"] = steer_value;
           msgJson["throttle"] = throttle_value;
